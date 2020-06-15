@@ -1,4 +1,4 @@
-const Path = require('path')
+const path = require('path')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -6,10 +6,10 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
   entry: {
-    app: Path.resolve(__dirname, '../src/scripts/index.js')
+    app: path.resolve(__dirname, '../src/scripts/index.js')
   },
   output: {
-    path: Path.join(__dirname, '../build'),
+    path: path.join(__dirname, '../build'),
     filename: 'js/[name].js'
   },
   optimization: {
@@ -21,12 +21,12 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin([
-      { from: Path.resolve(__dirname, '../public'), to: 'public' }
+      { from: path.resolve(__dirname, '../public'), to: 'public' }
     ]),
     // 如果需要多個 static pages 可以重複建立這邊的 HtmlWebpackPlugin block
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: Path.resolve(__dirname, '../src/index.html')
+      template: path.resolve(__dirname, '../src/index.html')
     }),
     new MiniCssExtractPlugin({
       filename: 'bundle.css'
@@ -34,8 +34,8 @@ module.exports = {
   ],
   resolve: {
     alias: {
-      '~': Path.resolve(__dirname, '../src'),
-      '@': Path.resolve(__dirname, '../src/scripts')
+      '~': path.resolve(__dirname, '../src'),
+      '@': path.resolve(__dirname, '../src/scripts')
     }
   },
   module: {
@@ -53,8 +53,9 @@ module.exports = {
       {
         test: /\.(ico|jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2)(\?.*)?$/,
         use: {
-          loader: 'file-loader',
+          loader: 'url-loader',
           options: {
+            limit: 1000, // bytes
             name: '[path][name]-[sha256:hash:base64:8].[ext]'
           }
         }
