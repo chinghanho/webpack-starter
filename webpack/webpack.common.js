@@ -3,6 +3,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 module.exports = {
   entry: {
@@ -26,7 +27,7 @@ module.exports = {
     new CopyWebpackPlugin([
       { from: path.resolve(__dirname, '../public'), to: 'public' }
     ]),
-    // 如果需要多個 static pages 可以重複建立這邊的 HtmlWebpackPlugin block
+    // dupcates `HtmlWebpackPlugin` code block if multiple static pages needed
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: path.resolve(__dirname, '../src/index.html')
@@ -47,7 +48,8 @@ module.exports = {
         test: /\.(html)$/,
         loader: 'html-loader'
       },
-      // 如果安裝不支援 CMD / ES6 Modules 可以用 script-loader 載入到 Webpack 模組化，例如：
+      // using `script-laoder` to load module in webpack if external library
+      // is not support CMD / ES6 modules
       //
       // {
       //   test: require.resolve('zepto'),
@@ -65,11 +67,28 @@ module.exports = {
       },
       {
         test: /\.s?css/i,
-        use: [
-          MiniCssExtractPlugin.loader,
-          'css-loader',
-          'sass-loader'
-        ]
+        use: ExtractTextPlugin.extract({
+          use: [
+            'css-loader',
+            {
+              loader: 'postcss-loader',
+              options: {
+                plugins: function() {
+                  return [
+                    require('autoprefixer'),
+                    require('postcss-flexbugs-fixes')
+                  ]
+                }
+              }
+            },
+            'sass-loader'
+          ]
+        })
+        // use: [
+        //   MiniCssExtractPlugin.loader,
+        //   'css-loader',
+        //   'sass-loader'
+        // ]
       }
     ]
   }
