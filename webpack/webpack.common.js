@@ -19,6 +19,9 @@ module.exports = {
     }
   },
   plugins: [
+    new ExtractTextPlugin({
+      filename: 'src/styles/[name].css'
+    })
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin([
       { from: path.resolve(__dirname, '../public'), to: 'public' }
