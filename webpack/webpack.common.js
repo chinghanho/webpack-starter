@@ -3,7 +3,6 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 module.exports = {
   entry: {
@@ -20,9 +19,6 @@ module.exports = {
     }
   },
   plugins: [
-    new ExtractTextPlugin({
-      filename: 'src/styles/[name].css'
-    })
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin([
       { from: path.resolve(__dirname, '../public'), to: 'public' }
@@ -50,7 +46,6 @@ module.exports = {
       },
       // using `script-laoder` to load module in webpack if external library
       // is not support CMD / ES6 modules
-      //
       // {
       //   test: require.resolve('zepto'),
       //   use: ['exports-loader?window.Zepto', 'script-loader']
@@ -67,28 +62,11 @@ module.exports = {
       },
       {
         test: /\.s?css/i,
-        use: ExtractTextPlugin.extract({
-          use: [
-            'css-loader',
-            {
-              loader: 'postcss-loader',
-              options: {
-                plugins: function() {
-                  return [
-                    require('autoprefixer'),
-                    require('postcss-flexbugs-fixes')
-                  ]
-                }
-              }
-            },
-            'sass-loader'
-          ]
-        })
-        // use: [
-        //   MiniCssExtractPlugin.loader,
-        //   'css-loader',
-        //   'sass-loader'
-        // ]
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          'sass-loader'
+        ]
       }
     ]
   }
